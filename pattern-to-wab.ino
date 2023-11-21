@@ -1,31 +1,32 @@
-int led = 9;      // Pino do LED
-int b1Pin = 2;     // Pino do botão 1
-int b2Pin = 4;     // Pino do botão 2
-int b3Pin = 7;     // Pino do botão 3
+int led = 5;      // Pino do LED
 int analogPin = A0; // Pino analógico, recebe a largura de pulso (duty cycle)
 int valor_analog;   // Variável para armazenar o valor do duty cycle do LED
+char charRead;
+String inputString = "";
 
 void setup() {
   pinMode(led, OUTPUT);
-  pinMode(b1Pin, INPUT);
-  pinMode(b2Pin, INPUT);
-  pinMode(b3Pin, INPUT);
   Serial.begin(9600);
 }
 
 void loop() {
-  if (digitalRead(b1Pin) == HIGH) {
-    padraoFast();
-  }
-
-  if (digitalRead(b2Pin) == HIGH) {
-    padraoIncremento();
-  }
-
-  if (digitalRead(b3Pin) == HIGH) {
-    padraoRandom();
+  if (Serial.available()) {
+    charRead = Serial.read();
+    if (charRead != 'T') {
+      inputString += charRead;
+    } else {
+      if (inputString == "true_fast") {
+        padraoFast();
+      } else if (inputString == "true_in") {
+        padraoIncremento();
+      } else if (inputString == "true_rand") {
+        padraoRandom();
+      }
+      inputString = "";
+    }
   }
 }
+
 void padraoFast() {
   Serial.println("Padrao Fast executado!");
   for (int i = 0; i < 100; i++) {
